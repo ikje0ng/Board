@@ -28,7 +28,7 @@
                 <tr th:each="dto:${list}">
                     <td th:text="${dto.num}"></td>
                     <!--해당 게시물 읽을 수 있도록 처리-->
-                    <td >    <a  th:href="@{/read.do(num=${dto.num},nowPage=${nowPage})}" th:text="${dto.subject}"> </a>     </td>
+                    <td >    <a  th:href="@{/read.do(num=${dto.num},nowPage=${nowPage},flag=true)}" th:text="${dto.subject}"> </a>     </td>
                     <td th:text="${dto.content}"></td>
                     <td th:text="${dto.regdate}"></td>
                     <td th:text="${dto.count}"></td>

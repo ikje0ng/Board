@@ -25,6 +25,7 @@ public class BoardController {
     //컨테이너는 Autowired를 보는 순간 자신이 만들어두었던 객체들의 타입을 확인한다
     @Autowired
     private final BoardService service;
+    private boolean flag=false;
 
     @GetMapping("/post.do")
     public String PostPage(){
@@ -34,7 +35,15 @@ public class BoardController {
     //DB에 값 삽입
     @PostMapping("/postproc.do")
     public String PostprocPage(BoardDTO dto, Model model){
+        //파라미터 받기
 
+        //입력값검증
+        if(dto.getSubject().isEmpty() || dto.getContent().isEmpty()|| dto.getPwd().isEmpty())
+        {return "redirect:/post.do";}
+
+        //서비스 호출
+
+        //페이지 이동
         service.postfunc(dto);
         model.addAttribute("dto",dto);
         return "redirect:/list.do"; //JSP/Servlet에서 response.sendredirect(URL)
@@ -84,6 +93,9 @@ public class BoardController {
         //파라미터로 현재 읽고있는 게시물 num 파라미터 받음
         System.out.println("Num : " + req.getParameter("num"));
 
+        //
+        flag = Boolean.parseBoolean(req.getParameter("flag"));
+
         //현재페이지 값 저장
         int nowPage = Integer.parseInt(req.getParameter("nowPage"));
 
@@ -94,8 +106,10 @@ public class BoardController {
         //num을 인자로 받고 board에 대입
         Long num =  Long.parseLong(req.getParameter("num"));
 
-        //카운트 증가(Service.Upcount(num)호출)
-        service.Upcount(num);
+        //카운트 증가(Service.Upcount(num)호출) (flag값이 true여야지만 조회수 증가되도록)
+        if (flag==true){
+            service.Upcount(num);
+        }
 
         //게시물 받아오기
         Board board = service.getBoard(num);
@@ -142,7 +156,7 @@ public class BoardController {
             //서비스 수정함수 사용
             service.updateboard(dto);
             //list.do로 이동(읽고 있는 페이지로 이동)
-            return "redirect:/list.do?nowPage="+nowPage;
+            return "redirect:/list.do?nowPage="+nowPage;    //redirect : 다른 컨트롤러로 전달할 때 redirect사용!
         }
         else //패스워드 잘못 입력했다면
         {
